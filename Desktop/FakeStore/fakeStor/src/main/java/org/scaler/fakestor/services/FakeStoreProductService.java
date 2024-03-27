@@ -3,6 +3,7 @@ package org.scaler.fakestor.services;
 import org.scaler.fakestor.FakeStorApplication;
 import org.scaler.fakestor.dto.RequestDTO;
 import org.scaler.fakestor.dto.ResponseDTO;
+import org.scaler.fakestor.exceptions.ProductNotFoundException;
 import org.scaler.fakestor.models.Category;
 import org.scaler.fakestor.models.Product;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,12 +38,14 @@ public class FakeStoreProductService implements IProductService{
         return product;
     }
     @Override
-    public Product getSingleProduct(Long id) {
+    public Product getSingleProduct(Long id) throws ProductNotFoundException {
         //hit FakeStore Api, and get product
         ResponseDTO responseDTO =  restTemplate.getForObject("https://fakestoreapi.com/products/" + id,
                 ResponseDTO.class);
+        if(responseDTO==null){
+            throw new ProductNotFoundException("Product with id " + id + " does not exist");
+        }
         //parse the response, and convert it into product class.
-
        Product product = getProductFromResponseDTO(responseDTO);
        return product;
     }
@@ -61,9 +64,24 @@ public class FakeStoreProductService implements IProductService{
 
     @Override
     public Product replaceProduct(Long id, RequestDTO requestDTO) {
-        RequestCallback requestCallback = restTemplate.acceptHeaderRequestCallback(ResponseDTO.class);
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(requestDTO, ResponseDTO.class);
         HttpMessageConverterExtractor<ResponseDTO> responseExtractor = new HttpMessageConverterExtractor(ResponseDTO.class, restTemplate.getMessageConverters());
         ResponseDTO responseDTO =  restTemplate.execute("https://fakestoreapi.com/products/" + id, HttpMethod.PUT, requestCallback, responseExtractor);
         return getProductFromResponseDTO(responseDTO);
+    }
+
+    @Override
+    public Product getProductByCategory_Id(Long id) throws ProductNotFoundException {
+        return null;
+    }
+
+    @Override
+    public Product addProduct(Product product) {
+        return null;
+    }
+
+    @Override
+    public Product updateProduct(Product product, Long id) {
+        return null;
     }
 }
