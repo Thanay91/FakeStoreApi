@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RequestDTO {
+public class ProductRequestDTO {
     private Long id;
     private String title;
     private double price;

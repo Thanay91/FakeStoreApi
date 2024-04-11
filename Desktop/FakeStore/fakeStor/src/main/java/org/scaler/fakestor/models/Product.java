@@ -22,6 +22,11 @@ public class Product extends BaseModel {
     //P  :  C
     //1  : 1
     //M  :  1
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     private Category category;
+
+    private int qty_available;
+    private int qty_sold;
+
+
 }

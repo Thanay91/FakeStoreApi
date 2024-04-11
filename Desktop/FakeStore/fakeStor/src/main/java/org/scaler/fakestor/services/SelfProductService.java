@@ -1,6 +1,6 @@
 package org.scaler.fakestor.services;
 
-import org.scaler.fakestor.dto.RequestDTO;
+import org.scaler.fakestor.dto.ProductRequestDTO;
 import org.scaler.fakestor.exceptions.ProductNotFoundException;
 import org.scaler.fakestor.models.Category;
 import org.scaler.fakestor.models.Product;
@@ -9,11 +9,9 @@ import org.scaler.fakestor.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,16 +84,16 @@ public class SelfProductService implements IProductService {
 
         if(product.getCategory().getName() != null){
             Optional<Category> optionalCategory = categoryRepository.findByName(product.getCategory().getName());
-            Category savedCategory;
+
             if(optionalCategory.isEmpty()){
-                Category category = new Category();
+                /*Category category = new Category();
                 category.setName(product.getCategory().getName());
-                savedCategory = categoryRepository.save(category);
+                savedCategory = categoryRepository.save(category);(not required as we use cascade)*/
             }
             else{
-                savedCategory = optionalCategory.get();
+                product.setCategory(optionalCategory.get());
             }
-            productToBeSaved.setCategory(savedCategory);
+
         }
         else{
             productToBeSaved.setCategory(existingProduct.getCategory());
@@ -120,7 +118,7 @@ public class SelfProductService implements IProductService {
     }
 
     @Override
-    public Product replaceProduct(Long id, RequestDTO requestDTO) {
+    public Product replaceProduct(Long id, ProductRequestDTO productRequestDTO) {
         return null;
     }
 }

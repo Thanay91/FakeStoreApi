@@ -1,8 +1,7 @@
 package org.scaler.fakestor.services;
 
-import org.scaler.fakestor.FakeStorApplication;
-import org.scaler.fakestor.dto.RequestDTO;
-import org.scaler.fakestor.dto.ResponseDTO;
+import org.scaler.fakestor.dto.ProductRequestDTO;
+import org.scaler.fakestor.dto.ProductResponseDTO;
 import org.scaler.fakestor.exceptions.ProductNotFoundException;
 import org.scaler.fakestor.models.Category;
 import org.scaler.fakestor.models.Product;
@@ -26,48 +25,48 @@ public class FakeStoreProductService implements IProductService{
     }
 
 
-    public Product getProductFromResponseDTO(ResponseDTO responseDTO){
+    public Product getProductFromResponseDTO(ProductResponseDTO productResponseDTO){
         Product product = new Product();
-        product.setId(responseDTO.getId());
-        product.setTitle(responseDTO.getTitle());
-        product.setDescription(responseDTO.getDescription());
-        product.setPrice(responseDTO.getPrice());
+        product.setId(productResponseDTO.getId());
+        product.setTitle(productResponseDTO.getTitle());
+        product.setDescription(productResponseDTO.getDescription());
+        product.setPrice(productResponseDTO.getPrice());
         product.setCategory(new Category());
-        product.getCategory().setName(responseDTO.getCategory());
-        product.setImageURL(responseDTO.getImage());
+        product.getCategory().setName(productResponseDTO.getCategory());
+        product.setImageURL(productResponseDTO.getImage());
         return product;
     }
     @Override
     public Product getSingleProduct(Long id) throws ProductNotFoundException {
         //hit FakeStore Api, and get product
-        ResponseDTO responseDTO =  restTemplate.getForObject("https://fakestoreapi.com/products/" + id,
-                ResponseDTO.class);
-        if(responseDTO==null){
+        ProductResponseDTO productResponseDTO =  restTemplate.getForObject("https://fakestoreapi.com/products/" + id,
+                ProductResponseDTO.class);
+        if(productResponseDTO ==null){
             throw new ProductNotFoundException("Product with id " + id + " does not exist");
         }
         //parse the response, and convert it into product class.
-       Product product = getProductFromResponseDTO(responseDTO);
+       Product product = getProductFromResponseDTO(productResponseDTO);
        return product;
     }
 
     @Override
     public List<Product> getAllProducts() {
         List<Product> allProducts = new ArrayList<>();
-        ResponseDTO[] response = restTemplate.getForObject(
-                "https://fakestoreapi.com/products", ResponseDTO[].class);
+        ProductResponseDTO[] response = restTemplate.getForObject(
+                "https://fakestoreapi.com/products", ProductResponseDTO[].class);
 
-        for(ResponseDTO responseDTO: response){
-            allProducts.add(getProductFromResponseDTO(responseDTO));
+        for(ProductResponseDTO productResponseDTO : response){
+            allProducts.add(getProductFromResponseDTO(productResponseDTO));
         }
         return allProducts;
     }
 
     @Override
-    public Product replaceProduct(Long id, RequestDTO requestDTO) {
-        RequestCallback requestCallback = restTemplate.httpEntityCallback(requestDTO, ResponseDTO.class);
-        HttpMessageConverterExtractor<ResponseDTO> responseExtractor = new HttpMessageConverterExtractor(ResponseDTO.class, restTemplate.getMessageConverters());
-        ResponseDTO responseDTO =  restTemplate.execute("https://fakestoreapi.com/products/" + id, HttpMethod.PUT, requestCallback, responseExtractor);
-        return getProductFromResponseDTO(responseDTO);
+    public Product replaceProduct(Long id, ProductRequestDTO productRequestDTO) {
+        RequestCallback requestCallback = restTemplate.httpEntityCallback(productRequestDTO, ProductResponseDTO.class);
+        HttpMessageConverterExtractor<ProductResponseDTO> responseExtractor = new HttpMessageConverterExtractor(ProductResponseDTO.class, restTemplate.getMessageConverters());
+        ProductResponseDTO productResponseDTO =  restTemplate.execute("https://fakestoreapi.com/products/" + id, HttpMethod.PUT, requestCallback, responseExtractor);
+        return getProductFromResponseDTO(productResponseDTO);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package org.scaler.fakestor.services;
 
-import org.scaler.fakestor.dto.RequestDTO;
+import org.scaler.fakestor.dto.ProductRequestDTO;
 import org.scaler.fakestor.exceptions.ProductNotFoundException;
 import org.scaler.fakestor.models.Product;
 
@@ -11,7 +11,7 @@ public interface IProductService {
 
     public List<Product> getAllProducts();
 
-    public Product replaceProduct(Long id, RequestDTO requestDTO);
+    public Product replaceProduct(Long id, ProductRequestDTO productRequestDTO);
 
     public Product getProductByCategory_Id(Long id) throws ProductNotFoundException;
 

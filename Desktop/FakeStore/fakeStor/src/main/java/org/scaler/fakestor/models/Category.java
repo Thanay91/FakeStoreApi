@@ -10,8 +10,7 @@ import java.util.List;
 @Setter
 @Entity
 public class Category extends BaseModel {
-
-    @OneToMany(mappedBy = "category")
-    private List<Product> products;
     private String name;
+    private double dynamicPricing;
+    private String subCategory;
 }

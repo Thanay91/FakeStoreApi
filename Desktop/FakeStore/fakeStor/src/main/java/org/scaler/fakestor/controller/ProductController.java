@@ -1,17 +1,13 @@
 package org.scaler.fakestor.controller;
 
 import org.scaler.fakestor.dto.ErrorResponseDTO;
-import org.scaler.fakestor.dto.RequestDTO;
+import org.scaler.fakestor.dto.ProductRequestDTO;
 import org.scaler.fakestor.exceptions.ProductNotFoundException;
 import org.scaler.fakestor.models.Category;
 import org.scaler.fakestor.models.Product;
-import org.scaler.fakestor.services.FakeStoreProductService;
-import org.scaler.fakestor.services.IProductService;
 import org.scaler.fakestor.services.SelfProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,41 +50,41 @@ public class ProductController {
     }
 
     @PostMapping
-    public Product addProduct(@RequestBody RequestDTO requestDTO){
+    public Product addProduct(@RequestBody ProductRequestDTO productRequestDTO){
 
         Product product = new Product();
-        product.setTitle(requestDTO.getTitle());
-        product.setPrice(requestDTO.getPrice());
-        product.setDescription(requestDTO.getDescription());
-        product.setImageURL(requestDTO.getImage());
+        product.setTitle(productRequestDTO.getTitle());
+        product.setPrice(productRequestDTO.getPrice());
+        product.setDescription(productRequestDTO.getDescription());
+        product.setImageURL(productRequestDTO.getImage());
         product.setCategory(new Category());
-        product.getCategory().setName(requestDTO.getCategory());
+        product.getCategory().setName(productRequestDTO.getCategory());
         Product savedProduct = productService.addProduct(product);
         return savedProduct;
     }
 
     @PatchMapping("/{id}")
-    public Product updateProduct(@PathVariable Long id, @RequestBody RequestDTO requestDTO) throws ProductNotFoundException {
+    public Product updateProduct(@PathVariable Long id, @RequestBody ProductRequestDTO productRequestDTO) throws ProductNotFoundException {
         Product product = new Product();
-        product.setTitle(requestDTO.getTitle());
-        product.setPrice(requestDTO.getPrice());
-        product.setDescription(requestDTO.getDescription());
-        product.setImageURL(requestDTO.getImage());
+        product.setTitle(productRequestDTO.getTitle());
+        product.setPrice(productRequestDTO.getPrice());
+        product.setDescription(productRequestDTO.getDescription());
+        product.setImageURL(productRequestDTO.getImage());
         product.setCategory(new Category());
-        product.getCategory().setName(requestDTO.getCategory());
+        product.getCategory().setName(productRequestDTO.getCategory());
         Product savedProduct = productService.updateProduct(product, id);
         return savedProduct;
     }
 
     @PutMapping("/{id}")
-    public Product replaceProduct(@PathVariable("id") Long id, @RequestBody RequestDTO requestDTO ){
-        if(requestDTO.getTitle()==null||
-        requestDTO.getDescription()==null||
-        requestDTO.getCategory()==null){
+    public Product replaceProduct(@PathVariable("id") Long id, @RequestBody ProductRequestDTO productRequestDTO){
+        if(productRequestDTO.getTitle()==null||
+        productRequestDTO.getDescription()==null||
+        productRequestDTO.getCategory()==null){
             return null;
         }
 
-        return productService.replaceProduct(id, requestDTO);
+        return productService.replaceProduct(id, productRequestDTO);
     }
 
     @GetMapping("/category/get_by/{id}")
